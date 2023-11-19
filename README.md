@@ -1,4 +1,4 @@
-# dfsms
+# Dairy Farm Shop Management System
 
 How to run the Dairy Farm Shop Management System Project (DFSMS)
 1. Clone repository
