@@ -73,6 +73,12 @@ echo '<script>alert("Invoice genrated successfully. Invoice number is "+"'.$invo
 
 }
 
+// Check if a product name has been entered for search
+$pname = '';
+if (isset($_POST['productname'])) {
+    $pname = mysqli_real_escape_string($con, $_POST['productname']);
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -146,15 +152,15 @@ include_once('includes/sidebar.php');
 </form>
 </div>
 </div>
-</section>
-<!--code for search result -->
-<?php if(isset($_POST['search'])){?>
- <section class="hk-sec-wrapper">
+
+<!-- Product List Section -->
+<section class="hk-sec-wrapper">
      
+                        <div class="table-responsive">
                             <div class="row">
                                 <div class="col-sm">
                                     <div class="table-wrap">
-                                        <table id="datable_1" class="table table-hover w-100 display pb-30">
+                                        <table id="productTable" class="table table-hover w-100 display pb-30">
                                             <thead>
                                                 <tr>
                                                     <th>#</th>
@@ -169,9 +175,15 @@ include_once('includes/sidebar.php');
                                             </thead>
                                             <tbody>
 <?php
-$pname=$_POST['productname'];
-$query=mysqli_query($con,"select * from tblproducts where ProductName like '%$pname%'");
-$cnt=1;
+// Construct the base query
+$queryString = "SELECT * FROM tblproducts";
+// Append the search condition if a product name was searched
+if (!empty($pname)) {
+    $queryString .= " WHERE ProductName LIKE '%$pname%'";
+}
+// Execute the query
+$query = mysqli_query($con, $queryString);
+$cnt = 1;
 while($row=mysqli_fetch_array($query))
 {    
 ?>
@@ -197,8 +209,8 @@ $cnt++;
                                     </div>
                                 </div>
                             </div>
+                        </div>
 </section>
-<?php } ?>                        
 
 
 <form class="needs-validation" method="post" novalidate>
@@ -302,14 +314,6 @@ if(isset($_SESSION["cart_item"])){
 ?>
 </div>
 </div></div></section>
-
-
-
-    
-
-
-
-
 </div>
 </div>
 </div>
