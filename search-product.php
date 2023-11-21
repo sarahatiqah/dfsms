@@ -152,7 +152,7 @@ include_once('includes/sidebar.php');
 </form>
 </div>
 </div>
-
+</section>
 <!-- Product List Section -->
 <section class="hk-sec-wrapper">
      
@@ -217,7 +217,7 @@ $cnt++;
 
 <!--- Shopping Cart ---->
 <section class="hk-sec-wrapper">
-     
+                        <div class="table-responsive">
                             <div class="row">
                                 <div class="col-sm">
                                     <div class="table-wrap">
@@ -233,7 +233,7 @@ if(isset($_SESSION["cart_item"])){
   <table id="datable_1" class="table table-hover w-100 display pb-30" border="1">
 <tbody>
 <tr>
-<th >Product Name</th>
+<th>Product Name</th>
 <th>Category</th>
 <th>Company</th>
 <th width="5%">Quantity</th>
@@ -312,6 +312,7 @@ if(isset($_SESSION["cart_item"])){
 <?php 
 }
 ?>
+</div>
 </div>
 </div></div></section>
 </div>
