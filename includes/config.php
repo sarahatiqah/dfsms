@@ -6,7 +6,10 @@ $host = "aws.connect.psdb.cloud";
 $username = "hlvou2sylhvcpj8b8oib";
 $password = "pscale_pw_bNWpPyS1IL2z7rzAsaHNBqM8pcC0PozCsGgUnBsR9jK";
 $database = "dfsms";
-$ssl = "/etc/ssl/cert.pem";
+// for Windows
+$ssl = __DIR__ . "/cacert.pem";
+// for MacOS
+// $ssl = "/etc/ssl/cert.pem";
 
 $con = mysqli_init();
 mysqli_ssl_set($con, NULL, NULL, $ssl, NULL, NULL);
@@ -17,6 +20,5 @@ if ($con->connect_error) {
     echo 'Not connected to the database';
     echo 'Error: ' . $con->connect_error;
 } else {
-    echo 'Connected successfully';
 }
 ?>
