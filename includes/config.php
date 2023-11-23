@@ -17,6 +17,5 @@ if ($con->connect_error) {
     echo 'Not connected to the database';
     echo 'Error: ' . $con->connect_error;
 } else {
-    echo 'Connected successfully';
 }
 ?>
