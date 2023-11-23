@@ -1,2 +1,3 @@
 # ignore config file
-/dfsms/includes/config.php
+includes/config.php
+
