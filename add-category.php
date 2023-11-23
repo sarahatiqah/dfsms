@@ -131,7 +131,7 @@ if (strlen($_SESSION['aid'] == 0)) {
                     alert("Please provide a valid category code.");
                     return;
                 }
-
+            
 
                 $.ajax({
                     url: 'backend/process_addCategory.php',
@@ -147,10 +147,10 @@ if (strlen($_SESSION['aid'] == 0)) {
                             alert("Duplicated entry detected. Please try again.");
                         }
                     },
-                    error: fußnction(xhr, status, error) {
-                    // Handle the error
-                    console.log(error);
-                }
+                    error: function(xhr, status, error) {
+                        // Handle the error
+                        console.log(error);
+                    }
                     });
 
                 }

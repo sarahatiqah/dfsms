@@ -9,7 +9,6 @@
     $categoryCode = $_POST['categoryCode'];
 
 
-
     // Check if the same record exists
     $checkSql = "SELECT COUNT(*) AS count FROM `tblcategory` WHERE `CategoryName` = ? OR `CategoryCode` = ?";
     $checkStmt = $con->prepare($checkSql);
