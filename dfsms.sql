@@ -11,7 +11,6 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -69,7 +68,7 @@ INSERT INTO `tblcategory` (`id`, `CategoryName`, `CategoryCode`, `PostingDate`) 
 (3, 'Bread', 'BD01', '2020-11-24 15:28:12'),
 (4, 'Paneer', 'PN01', '2020-11-20 16:27:43'),
 (5, 'Soya', 'SY01', '2020-11-20 07:27:43'),
-(12, 'Chees', 'CH12', '2020-12-15 13:39:15'),
+(12, 'Cheese', 'CH12', '2020-12-15 13:39:15'),
 (13, 'Ghee', 'Gh602', '2020-12-16 11:39:41');
 
 -- --------------------------------------------------------
@@ -90,7 +89,7 @@ CREATE TABLE `tblcompany` (
 
 INSERT INTO `tblcompany` (`id`, `CompanyName`, `PostingDate`) VALUES
 (1, 'Amul', '2020-11-24 14:50:50'),
-(2, 'Mother Diary', '2020-11-22 03:30:59'),
+(2, 'Mother Dairy', '2020-11-22 03:30:59'),
 (10, 'Paras', '2020-11-24 14:52:50'),
 (11, 'Goa Dairy', '2020-11-25 11:43:18'),
 (12, 'Mahaninda', '2020-12-15 13:39:57');
@@ -144,8 +143,8 @@ CREATE TABLE `tblproducts` (
   `CategoryName` varchar(150) DEFAULT NULL,
   `CompanyName` varchar(150) DEFAULT NULL,
   `ProductName` varchar(150) DEFAULT NULL,
-  `ProductPrice` decimal(10,0) DEFAULT current_timestamp(),
-  `PostingDate` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `ProductPrice` decimal(10,2) DEFAULT NULL,
+  `PostingDate` timestamp NOT NULL DEFAULT current_timestamp(),
   `UpdationDate` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -154,13 +153,15 @@ CREATE TABLE `tblproducts` (
 --
 
 INSERT INTO `tblproducts` (`id`, `CategoryName`, `CompanyName`, `ProductName`, `ProductPrice`, `PostingDate`, `UpdationDate`) VALUES
-(2, 'Milk', 'Amul', 'Tetra Pack milk 1ltr', '68', '2020-12-16 11:41:20', '2020-12-16 11:41:20'),
-(3, 'Milk', 'Mother Diary', 'Full Cream Milk 500ml', '26', '2019-12-25 06:42:24', '2019-12-25 06:42:24'),
-(4, 'Milk', 'Mother Diary', 'Full Cream Milk 1ltr', '50', '2019-12-25 06:42:39', '2019-12-25 06:42:39'),
-(5, 'Butter', 'Amul', 'Butter 100mg', '46', '2019-12-25 11:42:56', '2019-12-25 11:42:56'),
-(7, 'Ghee', 'Paras', 'Ghee 500mg', '350', '2019-12-25 14:53:33', '2019-12-25 14:53:33'),
-(8, 'Milk', 'Goa Dairy', '500', '27', '2020-11-25 11:43:50', NULL),
-(9, 'Chees', 'Amul', 'Mozilz chees', '200', '2020-12-15 13:41:15', NULL);
+(2, 'Milk', 'Amul', 'Tetra Pack milk 1ltr', 68.00, '2020-12-16 11:41:20', '2020-12-16 11:41:20'),
+(3, 'Milk', 'Mother Dairy', 'Full Cream Milk 500ml', 26.00, '2019-12-25 06:42:24', '2019-12-25 06:42:24'),
+(4, 'Milk', 'Mother Dairy', 'Full Cream Milk 1ltr', 50.00, '2019-12-25 06:42:39', '2019-12-25 06:42:39'),
+(5, 'Butter', 'Amul', 'Butter 100mg', 46.00, '2019-12-25 11:42:56', '2019-12-25 11:42:56'),
+(7, 'Ghee', 'Paras', 'Ghee 500mg', 350.00, '2019-12-25 14:53:33', '2019-12-25 14:53:33'),
+(8, 'Milk', 'Goa Dairy', '500', 27.00, '2020-11-25 11:43:50', NULL),
+(9, 'Cheese', 'Amul', 'Mozzarella Cheese', 200.00, '2020-12-15 13:41:15', NULL);
+
+-- --------------------------------------------------------
 
 --
 -- Indexes for dumped tables
@@ -229,6 +230,7 @@ ALTER TABLE `tblorders`
 --
 ALTER TABLE `tblproducts`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

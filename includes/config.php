@@ -6,7 +6,7 @@ $host = "aws.connect.psdb.cloud";
 $username = "hlvou2sylhvcpj8b8oib";
 $password = "pscale_pw_bNWpPyS1IL2z7rzAsaHNBqM8pcC0PozCsGgUnBsR9jK";
 $database = "dfsms";
-$ssl = "/etc/ssl/cert.pem";
+$ssl = __DIR__ . "/cacert.pem";
 
 $con = mysqli_init();
 mysqli_ssl_set($con, NULL, NULL, $ssl, NULL, NULL);
