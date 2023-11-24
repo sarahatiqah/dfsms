@@ -163,6 +163,12 @@ if (strlen($_SESSION['aid'] == 0)) {
                     return;
                 }
 
+                var characterCount = productName.length;
+                if (characterCount >150) {
+                    alert("Something went wrong. Please try again");
+                    return;
+                }
+
                 // Check if productPrice is a number and not negative
                 if (!isNumeric(productPrice) || parseFloat(productPrice) < 0) {
                     alert("Please provide a valid non-negative numeric product price");
