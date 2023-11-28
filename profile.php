@@ -11,9 +11,10 @@ if(isset($_POST['update']))
  $adminid=$_SESSION['aid'];   
 //Getting Post Values
 $adminname=$_POST['adminname'];  
+$username=$_POST['username'];
 $emailid=$_POST['emailid'];  
 $mobileno=$_POST['mobilenumber'];   
-$query=mysqli_query($con,"update tbladmin set AdminName='$adminname',MobileNumber='$mobileno',Email='$emailid' where id='$adminid'"); 
+$query=mysqli_query($con,"update tbladmin set AdminName='$adminname', UserName='$username',MobileNumber='$mobileno',Email='$emailid' where id='$adminid'"); 
 if($query){
 echo "<script>alert('Admin details updated successfully.');</script>";   
 echo "<script>window.location.href='profile.php'</script>";
@@ -110,7 +111,7 @@ while($row=mysqli_fetch_array($query)){
 <div class="form-row">
 <div class="col-md-6 mb-10">
 <label for="validationCustom03"> Username</label>
-<input type="text" class="form-control" id="validationCustom03" value="<?php echo $row['UserName'];?>" name="username" readonly>
+<input type="text" class="form-control" id="validationCustom03" value="<?php echo $row['UserName'];?>" name="username" required>
 </div>
 </div>
 
