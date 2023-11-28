@@ -27,7 +27,7 @@ elseif(isset($_POST['login']))
  else{
 
      echo "<script>alert('Invalid details. Please try again.');</script>";   
-   echo "<script>window.location.href='dashboard3.php'</script>";
+   echo "<script>window.location.href='dashboard.php'</script>";
     }
   }
 	}
