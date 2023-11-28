@@ -112,6 +112,7 @@ while($row=mysqli_fetch_array($query)){
 <div class="col-md-6 mb-10">
 <label for="validationCustom03"> Username</label>
 <input type="text" class="form-control" id="validationCustom03" value="<?php echo $row['UserName'];?>" name="username" required>
+<div class="invalid-feedback">Please provide a valid  username.</div>
 </div>
 </div>
 
