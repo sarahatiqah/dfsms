@@ -25,6 +25,17 @@ if (strlen($_SESSION['aid']) == 0) {
                     );
 
                     if (!empty($_SESSION["cart_item"])) {
+                        if (array_key_exists($productByCode["id"], $_SESSION["cart_item"])) {
+                            // If the product is already in the cart, update the quantity only if it's different
+                            if ($_SESSION["cart_item"][$productByCode["id"]]["quantity"] != $_POST["quantity"]) {
+                                $_SESSION["cart_item"][$productByCode["id"]]["quantity"] = $_POST["quantity"];
+                            }
+                        } else {
+                            // If the product is not in the cart, add it
+                            $_SESSION["cart_item"][$productByCode["id"]] = $itemArray;
+                        }
+                    } else {
+                        // If the cart is empty, add the product
                         $_SESSION["cart_item"][$productByCode["id"]] = $itemArray;
                     }
                     // Change the URL to remove the product information
