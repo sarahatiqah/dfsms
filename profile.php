@@ -14,12 +14,39 @@ $adminname=$_POST['adminname'];
 $username=$_POST['username'];
 $emailid=$_POST['emailid'];  
 $mobileno=$_POST['mobilenumber'];   
+
+// Check if the username already exists
+$checkUsernameQuery = "SELECT COUNT(*) as count_usernames FROM tbladmin WHERE UserName = '$username' AND id != '$adminid'";
+$result = mysqli_query($con, $checkUsernameQuery);
+$row = mysqli_fetch_assoc($result);
+
+if ($row['count_usernames'] > 0) {
+    echo "<script>alert('Username already exists. Please choose a different one.');</script>";
+    echo "<script>window.location.href='profile.php'</script>";
+    exit();
+}
+
+if(empty($username)) {
+    echo "<script>alert('Username cannot be empty.');</script>";
+    echo "<script>window.location.href='profile.php'</script>";
+    exit();
+}
+
+if((strlen($username) > 45)) {
+    echo "<script>alert('Username cannot be more than 45 characters.');</script>";
+    echo "<script>window.location.href='profile.php'</script>";
+    exit();
+}
+
+
+
 $query=mysqli_query($con,"update tbladmin set AdminName='$adminname', UserName='$username',MobileNumber='$mobileno',Email='$emailid' where id='$adminid'"); 
 if($query){
 echo "<script>alert('Admin details updated successfully.');</script>";   
 echo "<script>window.location.href='profile.php'</script>";
 } 
 }
+
 
     ?>
 <!DOCTYPE html>
@@ -111,7 +138,7 @@ while($row=mysqli_fetch_array($query)){
 <div class="form-row">
 <div class="col-md-6 mb-10">
 <label for="validationCustom03"> Username</label>
-<input type="text" class="form-control" id="validationCustom03" value="<?php echo $row['UserName'];?>" name="username" required>
+<input type="text" class="form-control" id="validationCustom03" value="<?php echo $row['UserName'];?>" name="username" required maxlength="45">
 <div class="invalid-feedback">Please provide a valid  username.</div>
 </div>
 </div>
