@@ -11,16 +11,16 @@ ini_set('display_errors', 1);
 
 try {
 //     Local
-//     $host = getenv("DB_HOST");
-//     $username = getenv("DB_USER");
-//     $password = getenv("DB_PASSWORD");
-//     $database = getenv("DB_NAME");
+     $host = getenv("DB_HOST");
+     $username = getenv("DB_USER");
+     $password = getenv("DB_PASSWORD");
+     $database = getenv("DB_NAME");
 
 //     Online
-    $host = getenv("AWS_HOST");
-    $username = getenv("AWS_USER");
-    $password = getenv("AWS_PASSWORD");
-    $database = getenv("AWS_DB_NAME");
+//    $host = getenv("AWS_HOST");
+//    $username = getenv("AWS_USER");
+//    $password = getenv("AWS_PASSWORD");
+//    $database = getenv("AWS_DB_NAME");
 
 //     for Windows
     $ssl = __DIR__ . "/cacert.pem";
@@ -28,7 +28,7 @@ try {
 //     $ssl = "/etc/ssl/cert.pem";
 
     $con = mysqli_init();
-    mysqli_ssl_set($con, NULL, NULL, $ssl, NULL, NULL);
+//    mysqli_ssl_set($con, NULL, NULL, $ssl, NULL, NULL);
 
     $con->real_connect($host, $username, $password, $database);
 

@@ -263,16 +263,21 @@ if(isset($_SESSION["cart_item"])){
 </table>  
 
 <div class="form-row">
-<div class="col-md-6 mb-10">
-<label for="validationCustom03">Customer Name</label>
-<input type="text" class="form-control" id="validationCustom03" placeholder="Customer Name" name="customername" required>
-<div class="invalid-feedback">Please provide a valid customer name.</div>
-</div>
-<div class="col-md-6 mb-10">
-<label for="validationCustom03">Customer Mobile Number</label>
-<input type="text" class="form-control" id="validationCustom03" placeholder="Mobile Number" name="mobileno" required>
-<div class="invalid-feedback">Please provide a valid mobile number.</div>
-</div>
+    <div class="col-md-6 mb-10">
+        <label for="validationCustom03">Customer Name</label>
+        <input type="text" class="form-control" id="validationCustom03" placeholder="Customer Name" name="customername" required>
+        <div class="invalid-feedback">Please provide a valid customer name.</div>
+    </div>
+    <div class="col-md-6 mb-10">
+        <label for="validationCustom03">Customer Mobile Number</label>
+        <input type="text" class="form-control" id="validationCustom03" placeholder="Mobile Number" name="mobileno" required>
+        <div class="invalid-feedback">Please provide a valid mobile number.</div>
+    </div>
+    <div class="col-md-6 mb-10">
+        <label for="validationCustom03">Coupon Code</label>
+        <input type="text" class="form-control" placeholder="Coupon Code" name="couponcode">
+        <div class="invalid-feedback">Please provide a valid mobile number.</div>
+    </div>
 </div>
 
 <div class="form-row">

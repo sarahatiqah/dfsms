@@ -164,6 +164,33 @@ INSERT INTO `tblproducts` (`id`, `CategoryName`, `CompanyName`, `ProductName`, `
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tblcoupons`
+--
+
+CREATE TABLE `tblcoupons` (
+     `CouponID` int(11) NOT NULL,
+     `CouponCode` varchar(50) NOT NULL,
+     `DiscountAmount` decimal(10,2) DEFAULT NULL,
+     `DiscountPercentage` decimal(5,2) DEFAULT NULL,
+     `ValidFrom` date DEFAULT NULL,
+     `ValidTo` date DEFAULT NULL,
+     `CreatedOn` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tblcoupons`
+--
+
+INSERT INTO `tblcoupons` (`CouponID`, `CouponCode`, `DiscountAmount`, `DiscountPercentage`, `ValidFrom`, `ValidTo`, `CreatedOn`) VALUES
+ (1, 'NEWYEAR2024', 10.00, NULL, '2023-12-25', '2024-01-05', '2023-12-01 00:00:00'),
+ (2, 'SUMMER25', NULL, 25.00, '2024-06-01', '2024-06-30', '2024-05-15 00:00:00'),
+ (3, '50OFF', 50.00, NULL, '2024-07-01', '2024-07-31', '2024-06-20 00:00:00'),
+ (4, 'WELCOME10', NULL, 10.00, '2023-11-01', '2024-11-30', '2023-10-15 00:00:00'),
+ (5, 'FREESHIP', 0.00, NULL, '2024-01-01', '2024-01-31', '2023-12-20 00:00:00');
+
+-- --------------------------------------------------------
+
+--
 -- Indexes for dumped tables
 --
 
@@ -198,6 +225,12 @@ ALTER TABLE `tblproducts`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `tblcoupons`
+--
+ALTER TABLE `tblcoupons`
+    ADD PRIMARY KEY (`CouponID`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -230,6 +263,13 @@ ALTER TABLE `tblorders`
 --
 ALTER TABLE `tblproducts`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT for table `tblcoupons`
+--
+ALTER TABLE `tblcoupons`
+    MODIFY `CouponID` int(11) NOT NULL AUTO_INCREMENT;
+
 
 COMMIT;
 
