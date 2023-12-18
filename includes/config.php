@@ -23,7 +23,7 @@ try {
 //    $database = getenv("AWS_DB_NAME");
 
 //     for Windows
-    $ssl = __DIR__ . "/cacert.pem";
+//    $ssl = __DIR__ . "/cacert.pem";
 //     for MacOS
 //     $ssl = "/etc/ssl/cert.pem";
 

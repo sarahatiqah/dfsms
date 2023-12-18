@@ -101,36 +101,39 @@ INSERT INTO `tblcompany` (`id`, `CompanyName`, `PostingDate`) VALUES
 --
 
 CREATE TABLE `tblorders` (
-  `id` int(11) NOT NULL,
-  `ProductId` int(11) DEFAULT NULL,
-  `Quantity` int(11) DEFAULT NULL,
-  `InvoiceNumber` int(11) DEFAULT NULL,
-  `CustomerName` varchar(150) DEFAULT NULL,
-  `CustomerContactNo` bigint(12) DEFAULT NULL,
-  `PaymentMode` varchar(100) DEFAULT NULL,
-  `InvoiceGenDate` timestamp NULL DEFAULT current_timestamp()
+     `id` int(11) NOT NULL,
+     `ProductId` int(11) DEFAULT NULL,
+     `Quantity` int(11) DEFAULT NULL,
+     `InvoiceNumber` int(11) DEFAULT NULL,
+     `CustomerName` varchar(150) DEFAULT NULL,
+     `CustomerContactNo` bigint(12) DEFAULT NULL,
+     `PaymentMode` varchar(100) DEFAULT NULL,
+     `DiscountAmount` varchar(100) DEFAULT NULL,
+     `InvoiceGenDate` timestamp NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tblorders`
 --
 
-INSERT INTO `tblorders` (`id`, `ProductId`, `Quantity`, `InvoiceNumber`, `CustomerName`, `CustomerContactNo`, `PaymentMode`, `InvoiceGenDate`) VALUES
-(15, 3, 1, 775316574, 'n', 9182736453, 'cash', '2020-12-15 10:39:24'),
-(16, 2, 1, 237046689, 'a', 99, 'card', '2020-12-15 10:49:10'),
-(17, 7, 2, 986256324, 'jkaxb', 9182736453, 'cash', '2020-12-15 10:59:07'),
-(18, 4, 1, 521146891, 'nkn.n8y7t6r5e', 87654, 'cash', '2020-12-15 11:03:31'),
-(19, 7, 2, 422189469, 'Yogeshwar', 99, 'card', '2020-12-15 11:09:50'),
-(20, 7, 1, 685538326, 'mkasds', 9182736453, 'cash', '2020-12-15 11:14:09'),
-(21, 2, 1, 157999667, 'hhkhvjcvx', 90, 'cash', '2020-12-15 11:44:05'),
-(22, 2, 1, 580982524, 'snxsxz', 9182736453, 'cash', '2020-12-15 12:23:16'),
-(23, 9, 1, 279575306, 'VVK', 9850484293, 'cash', '2020-12-15 13:42:24'),
-(24, 2, 2, 279575306, 'VVK', 9850484293, 'cash', '2020-12-15 13:42:24'),
-(25, 2, 1, 719596395, 'gyutds', 899765, 'cash', '2020-12-16 11:44:27'),
-(26, 2, 1, 277113529, 'laxuman', 9420720840, 'cash', '2020-12-16 13:44:42'),
-(27, 3, 1, 715363357, 'kunal', 9552533693, 'cash', '2020-12-16 13:46:49'),
-(28, 7, 4, 409381103, 'Pinki', 2020202, 'cash', '2020-12-17 11:09:20'),
-(29, 2, 1, 961693224, 'jdp', 710000000, 'cash', '2020-12-17 12:26:51');
+INSERT INTO `tblorders` (`id`, `ProductId`, `Quantity`, `InvoiceNumber`, `CustomerName`, `CustomerContactNo`, `PaymentMode`, `DiscountAmount`, `InvoiceGenDate`) VALUES
+ (15, 3, 1, 775316574, 'n', 9182736453, 'cash', '10.00', '2020-12-15 10:39:24'), -- Example with Discount Amount
+ (16, 2, 1, 237046689, 'a', 99, 'card', NULL, '2020-12-15 10:49:10'), -- Example without Discount
+ (17, 7, 2, 986256324, 'jkaxb', 9182736453, 'cash', '15.50', '2020-12-15 10:59:07'),
+ (18, 4, 1, 521146891, 'nkn.n8y7t6r5e', 87654, 'cash', '5.00', '2020-12-15 11:03:31'),
+ (19, 7, 2, 422189469, 'Yogeshwar', 99, 'card', NULL, '2020-12-15 11:09:50'),
+ (20, 7, 1, 685538326, 'mkasds', 9182736453, 'cash', '7.25', '2020-12-15 11:14:09'),
+ (21, 2, 1, 157999667, 'hhkhvjcvx', 90, 'cash', '2.50', '2020-12-15 11:44:05'),
+ (22, 2, 1, 580982524, 'snxsxz', 9182736453, 'cash', '3.75', '2020-12-15 12:23:16'),
+ (23, 9, 1, 279575306, 'VVK', 9850484293, 'cash', '12.00', '2020-12-15 13:42:24'),
+ (24, 2, 2, 279575306, 'VVK', 9850484293, 'cash', '0.00', '2020-12-15 13:42:24'),
+ (25, 2, 1, 719596395, 'gyutds', 899765, 'cash', '4.75', '2020-12-16 11:44:27'),
+ (26, 2, 1, 277113529, 'laxuman', 9420720840, 'cash', '8.00', '2020-12-16 13:44:42'),
+ (27, 3, 1, 715363357, 'kunal', 9552533693, 'cash', '0.00', '2020-12-16 13:46:49'),
+ (28, 7, 4, 409381103, 'Pinki', 2020202, 'cash', '20.00', '2020-12-17 11:09:20'),
+ (29, 2, 1, 961693224, 'jdp', 710000000, 'cash', '3.25', '2020-12-17 12:26:51');
+
+
 
 -- --------------------------------------------------------
 
@@ -182,11 +185,11 @@ CREATE TABLE `tblcoupons` (
 --
 
 INSERT INTO `tblcoupons` (`CouponID`, `CouponCode`, `DiscountAmount`, `DiscountPercentage`, `ValidFrom`, `ValidTo`, `CreatedOn`) VALUES
- (1, 'NEWYEAR2024', 10.00, NULL, '2023-12-25', '2024-01-05', '2023-12-01 00:00:00'),
- (2, 'SUMMER25', NULL, 25.00, '2024-06-01', '2024-06-30', '2024-05-15 00:00:00'),
- (3, '50OFF', 50.00, NULL, '2024-07-01', '2024-07-31', '2024-06-20 00:00:00'),
- (4, 'WELCOME10', NULL, 10.00, '2023-11-01', '2024-11-30', '2023-10-15 00:00:00'),
- (5, 'FREESHIP', 0.00, NULL, '2024-01-01', '2024-01-31', '2023-12-20 00:00:00');
+ (1, 'NEWYEAR2024', 10.00, NULL, '2023-12-25', '2023-01-05', '2024-12-01 00:00:00'),
+ (2, 'SUMMER25', NULL, 25.00, '2024-06-01', '2023-06-30', '2024-05-15 00:00:00'),
+ (3, '50OFF', 50.00, NULL, '2024-07-01', '2023-07-31', '2024-06-20 00:00:00'),
+ (4, 'WELCOME10', NULL, 10.00, '2023-11-01', '2023-11-30', '2024-10-15 00:00:00'),
+ (5, 'FREESHIP', 0.00, NULL, '2024-01-01', '2023-01-31', '2023-12-20 00:00:00');
 
 -- --------------------------------------------------------
 
