@@ -12,7 +12,6 @@ if (strlen($_SESSION["aid"] == 0)) {
 
     // Code for adding and checking Coupon Code Validity
     if (isset($_POST['couponvalidate'])) {
-        // Perform coupon validation
         $couponCode = mysqli_real_escape_string($con, $_POST["couponcode"]);
         $query = "SELECT * FROM tblcoupons WHERE CouponCode = ? AND ValidFrom <= CURDATE() AND ValidTo >= CURDATE()";
         $stmt = mysqli_prepare($con, $query);
@@ -31,7 +30,7 @@ if (strlen($_SESSION["aid"] == 0)) {
             // Check if discount is in amount or percentage and create a message accordingly
             if (!is_null($discountAmount) && $discountAmount > 0) {
                 $discountInfo = "Discount Amount: $" . $discountAmount;
-                $discountValue = $discountAmount;
+                $discountValue = "-".$discountAmount;
             } elseif (!is_null($discountPercentage) && $discountPercentage > 0) {
                 $discountInfo = "Discount Percentage: " . $discountPercentage . "%";
                 $discountValue = -$discountPercentage."%";
@@ -39,18 +38,30 @@ if (strlen($_SESSION["aid"] == 0)) {
                 $discountInfo = "No discount available for this coupon.";
             }
 
-            // Add coupon in the cart
-            if (!isset($_SESSION["cart_item"])) {
-                $_SESSION["cart_item"] = array();
-            }
-            $_SESSION["cart_item"]["coupon"] = [
-                "catname" => "Coupon",
-                "compname" => "None",
-                "quantity" => 1,
-                "pname" => $couponCode,
-                "price" => $discountValue,
-                "code" => "coupon",
+            // Add Coupon In Cart
+            $itemArray = [
+                $row["CouponID"] => [
+                    "catname" => "Coupon",
+                    "compname" => "None",
+                    "quantity" => 0,
+                    "pname" => $couponCode,
+                    "price" => $discountValue,
+                    "code" => "coupon",
+                ],
             ];
+
+            if (!empty($_SESSION["cart_item"])) {
+                // Remove any existing coupon from the cart
+                foreach ($_SESSION["cart_item"] as $k => $v) {
+                    if ($v["catname"] === "Coupon") {
+                        unset($_SESSION["cart_item"][$k]);
+                    }
+                }
+                // Add the new coupon
+                $_SESSION["cart_item"] = array_merge($_SESSION["cart_item"], $itemArray);
+            } else {
+                $_SESSION["cart_item"] = $itemArray;
+            }
 
             echo "<script>alert('Coupon code is valid. $discountInfo');</script>";
         } else {
@@ -89,20 +100,12 @@ if (strlen($_SESSION["aid"] == 0)) {
                             ) {
                                 foreach ($_SESSION["cart_item"] as $k => $v) {
                                     if ($productByCode["id"] == $k) {
-                                        if (
-                                            empty(
-                                            $_SESSION["cart_item"][$k][
-                                            "quantity"
-                                            ]
-                                            )
-                                        ) {
-                                            $_SESSION["cart_item"][$k][
-                                            "quantity"
-                                            ] = 0;
+
+                                        if (empty($_SESSION["cart_item"][$k]["quantity"])) {
+                                            $_SESSION["cart_item"][$k]["quantity"] = 0;
                                         }
-                                        $_SESSION["cart_item"][$k][
-                                        "quantity"
-                                        ] += $_POST["quantity"];
+
+                                        $_SESSION["cart_item"][$k]["quantity"] = intval($_POST["quantity"]) + $_SESSION["cart_item"][$k]["quantity"];
                                     }
                                 }
                             } else {
@@ -151,7 +154,7 @@ if (strlen($_SESSION["aid"] == 0)) {
         foreach ($value as $pdid => $qty) {
             $query = mysqli_query(
                 $con,
-                "insert into tblorders(ProductId,Quantity,InvoiceNumber,CustomerName,CustomerContactNo,PaymentMode) values('$pdid','$qty','$invoiceno','$cname','$cmobileno','$pmode')"
+                "insert into tblorders(ProductId,Quantity,InvoiceNumber,CustomerName,CustomerContactNo,PaymentMode,DiscountAmount) values('$pdid','$qty','$invoiceno','$cname','$cmobileno','$pmode','')"
             );
         }
         echo '<script>alert("Invoice genrated successfully. Invoice number is "+"' .
@@ -296,6 +299,8 @@ if (strlen($_SESSION["aid"] == 0)) {
                                             if (isset($_SESSION["cart_item"])) {
                                             $total_quantity = 0;
                                             $total_price = 0;
+                                            $discount_value = 0;
+                                            $discount_type = "";
                                             ?>
                                             <table id="datable_1" class="table table-hover w-100 display pb-30" border="1">
                                                 <tbody>
@@ -311,20 +316,13 @@ if (strlen($_SESSION["aid"] == 0)) {
                                                 <?php
                                                 $productid = array();
                                                 foreach ($_SESSION["cart_item"] as $item) {
-                                                    $item_price = $item["quantity"] * $item["price"];
-                                                    array_push($productid, $item['code']);
-
-                                                if ($item['code'] === 'coupon') {
-                                                    echo "<tr>";
-                                                    echo "<td>" . $item["pname"] . "</td>";
-                                                    echo "<td>". $item["catname"] . "</td>";
-                                                    echo "<td>". $item["compname"] . "</td>";
-                                                    echo "<td>". $item["quantity"] . "</td>";
-                                                    echo "<td>". $item["price"] . "</td>";
-                                                    echo "<td>". $item["price"] . "</td>";
-                                                    echo "<td><a href='search-product.php?action=remove&code=coupon' class='btnRemoveAction'><img src='dist/img/icon-delete.png' alt='Remove Coupon' /></a></td>";
-                                                    echo "</tr>";
-                                                } else {
+                                                    if ($item['code'] === 'coupon') {
+                                                        $item_price = $item["price"];
+                                                        array_push($productid, $item['code']);
+                                                    } else {
+                                                        $item_price = $item["quantity"] * $item["price"];
+                                                        array_push($productid, $item['code']);
+                                                    }
                                                     ?>
                                                     <input type="hidden" value="<?php echo $item['quantity']; ?>" name="quantity[<?php echo $item['code']; ?>]">
                                                     <tr>
@@ -333,14 +331,43 @@ if (strlen($_SESSION["aid"] == 0)) {
                                                         <td><?php echo $item["compname"]; ?></td>
                                                         <td><?php echo $item["quantity"]; ?></td>
                                                         <td><?php echo $item["price"]; ?></td>
-                                                        <td><?php echo number_format($item_price, 2); ?></td>
+                                                        <td><?php
+                                                            if ($item['code'] === 'coupon') {
+                                                                echo $item["price"];
+                                                            } else {
+                                                                echo number_format($item_price, 2);
+                                                            }
+                                                            ?></td>
                                                         <td><a href="search-product.php?action=remove&code=<?php echo $item["code"]; ?>" class="btnRemoveAction"><img src="dist/img/icon-delete.png" alt="Remove Item" /></a></td>
                                                     </tr>
                                                     <?php
                                                     $total_quantity += $item["quantity"];
-                                                    $total_price += ($item["price"] * $item["quantity"]);
-                                                }}
+                                                    if ($item['code'] !== 'coupon') {
+                                                        $total_price += ($item["price"] * $item["quantity"]);
+                                                    } else {
+                                                        if (strpos($item["price"], "%") !== false) {
+                                                            $discount_type = "percentage";
+                                                        } else {
+                                                            $discount_type = "normal";
+                                                        }
+
+                                                        if (preg_match('/(\d+)/', $item["price"], $matches)) {
+                                                            $discount_value = (int)$matches[0];
+                                                        } else {
+                                                            $discount_value = 0;
+                                                        }
+                                                    }
+                                                }
+                                                if ($discount_type === "percentage") {
+                                                    $total_price = $total_price * (1 - ($discount_value/100));
+                                                } else {
+                                                    $total_price = $total_price - $discount_value;
+                                                }
                                                 $_SESSION['productid'] = $productid;
+                                                echo '<pre>';
+                                                print_r($productid);
+                                                echo '</pre>';
+
                                                 ?>
                                                 <tr>
                                                     <td colspan="3" align="right">Total:</td>
@@ -385,8 +412,6 @@ if (strlen($_SESSION["aid"] == 0)) {
                                 </div>
                             </section>
                         </form>
-
-
                     <?php
                     } else {
                         ?>
