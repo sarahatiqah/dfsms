@@ -23,7 +23,7 @@ switch($_GET["action"]) {
                                 if(empty($_SESSION["cart_item"][$k]["quantity"])) {
                                     $_SESSION["cart_item"][$k]["quantity"] = 0;
                                 }
-                                $_SESSION["cart_item"][$k]["quantity"] += $_POST["quantity"];
+                                $_SESSION["cart_item"][$k]["quantity"] += intval($_POST["quantity"]);
                             }
                     }
                 } else {
