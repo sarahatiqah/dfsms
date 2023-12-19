@@ -89,17 +89,29 @@
                         );
 
                         if (!empty($_SESSION["cart_item"])) {
-                            if (array_key_exists($productByCode["id"], $_SESSION["cart_item"])) {
-                                // If the product is already in the cart, update the quantity only if it's different
-                                if ($_SESSION["cart_item"][$productByCode["id"]]["quantity"] != $_POST["quantity"]) {
-                                    $_SESSION["cart_item"][$productByCode["id"]]["quantity"] = $_POST["quantity"];
+                            if (
+                                in_array(
+                                    $productByCode["id"],
+                                    array_keys($_SESSION["cart_item"])
+                                )
+                            ) {
+                                foreach ($_SESSION["cart_item"] as $k => $v) {
+                                    if ($productByCode["id"] == $k) {
+
+                                        if (empty($_SESSION["cart_item"][$k]["quantity"])) {
+                                            $_SESSION["cart_item"][$k]["quantity"] = 0;
+                                        }
+
+                                        $_SESSION["cart_item"][$k]["quantity"] = intval($_POST["quantity"]) + $_SESSION["cart_item"][$k]["quantity"];
+                                    }
                                 }
                             } else {
-                                // If the product is not in the cart, add it
-                                $_SESSION["cart_item"][$productByCode["id"]] = $itemArray;
+                                $_SESSION["cart_item"] = array_merge(
+                                    $_SESSION["cart_item"],
+                                    $itemArray
+                                );
                             }
                         } else {
-                            // If the cart is empty, add the product
                             $_SESSION["cart_item"][$productByCode["id"]] = $itemArray;
                         }
                         // Change the URL to remove the product information
@@ -307,6 +319,7 @@
                                             if (isset($_SESSION["cart_item"])) {
                                             $total_quantity = 0;
                                             $total_price = 0;
+                                            $total_price_deducted = 0;
                                             $discount_value = 0;
                                             $discount_type = "";
                                             ?>
@@ -324,7 +337,7 @@
                                                 <?php
                                                 $productid = array();
                                                 foreach ($_SESSION["cart_item"] as $item) {
-                                                    if ($item['code'] === 'coupon') {
+                                                    if ($item['code'] === 'Coupon') {
                                                         $item_price = $item["price"];
                                                         array_push($productid, $item['code']);
                                                     } else {
@@ -368,8 +381,10 @@
                                                 }
                                                 if ($discount_type === "percentage") {
                                                     $total_price = $total_price * (1 - ($discount_value/100));
+                                                    $total_price_deducted = $total_price * ($discount_value/100);
                                                 } else {
                                                     $total_price = $total_price - $discount_value;
+                                                    $total_price_deducted = $discount_value;
                                                 }
                                                 $_SESSION['productid'] = $productid;
 
