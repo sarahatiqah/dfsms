@@ -39,9 +39,9 @@ switch($_GET["action"]) {
     // code for removing product from cart
     case "remove":
         if(!empty($_SESSION["cart_item"])) {
-            foreach($_SESSION["cart_item"] as $k => $v) {
-                    if($_GET["code"] == $k)
-                        unset($_SESSION["cart_item"][$k]);              
+            foreach($_SESSION["cart_item"] as $k => $v) {      
+                    if($v["code"] == $_GET["code"])
+                        unset($_SESSION["cart_item"][$k]); 
                     if(empty($_SESSION["cart_item"]))
                         unset($_SESSION["cart_item"]);
             }
@@ -218,17 +218,17 @@ if(isset($_SESSION["cart_item"])){
     $total_quantity = 0;
     $total_price = 0;
 ?>  
-  <table id="datable_1" class="table table-hover w-100 display pb-30" border="1">
+<table id="datable_1" class="table table-hover w-100 display pb-30" border="1">
 <tbody>
-<tr>
-<th >Product Name</th>
-<th>Category</th>
-<th>Company</th>
-<th width="5%">Quantity</th>
-<th width="10%">Unit Price</th>
-<th width="10%">Price</th>
-<th width="5%">Remove</th>
-</tr>   
+    <tr>
+        <th>Product Name</th>
+        <th>Category</th>
+        <th>Company</th>
+        <th width="5%">Quantity</th>
+        <th width="10%">Unit Price</th>
+        <th width="10%">Price</th>
+        <th width="5%">Remove</th>
+    </tr>   
 <?php 
  $productid=array();      
     foreach ($_SESSION["cart_item"] as $item){
@@ -238,13 +238,13 @@ if(isset($_SESSION["cart_item"])){
         ?>
            <input type="hidden" value="<?php echo $item['quantity']; ?>" name="quantity[<?php echo $item['code']; ?>]">
                 <tr>
-                <td><?php echo $item["pname"]; ?></td>
-                <td><?php echo $item["catname"]; ?></td>
-                <td><?php echo $item["compname"]; ?></td>
-                <td><?php echo $item["quantity"]; ?></td>
-                <td><?php echo $item["price"]; ?></td>
-                <td><?php echo number_format($item_price,2); ?></td>
-                <td><a href="search-product.php?action=remove&code=<?php echo $item["code"]; ?>" class="btnRemoveAction"><img src="dist/img/icon-delete.png" alt="Remove Item" /></a></td>
+                    <td><?php echo $item["pname"]; ?></td>
+                    <td><?php echo $item["catname"]; ?></td>
+                    <td><?php echo $item["compname"]; ?></td>
+                    <td><?php echo $item["quantity"]; ?></td>
+                    <td><?php echo $item["price"]; ?></td>
+                    <td><?php echo number_format($item_price,2); ?></td>
+                    <td><a href="search-product.php?action=remove&code=<?php echo $item["code"]; ?>" class="btnRemoveAction"><img src="dist/img/icon-delete.png" alt="Remove Item" /></a></td>
                 </tr>
                 <?php
                 $total_quantity += $item["quantity"];
