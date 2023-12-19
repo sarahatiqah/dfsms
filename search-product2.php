@@ -72,69 +72,55 @@ if (strlen($_SESSION["aid"] == 0)) {
     //code for Cart
     if (!empty($_GET["action"])) {
         switch ($_GET["action"]) {
-            //code for adding product in cart
+
+                //code for adding product in cart
             case "add":
                 if (!empty($_POST["quantity"])) {
                     $pid = $_GET["pid"];
-                    $result = mysqli_query(
-                        $con,
-                        "SELECT * FROM tblproducts WHERE id='$pid'"
+                    $result = mysqli_query($con, "SELECT * FROM tblproducts WHERE id='$pid'");
+                    $productByCode = mysqli_fetch_array($result);
+
+                    $itemArray = array(
+                        'catname' => $productByCode["CategoryName"],
+                        'compname' => $productByCode["CompanyName"],
+                        'quantity' => $_POST["quantity"],
+                        'pname' => $productByCode["ProductName"],
+                        'price' => $productByCode["ProductPrice"],
+                        'code' => $productByCode["id"]
                     );
-                    while ($productByCode = mysqli_fetch_array($result)) {
-                        $itemArray = [
-                            $productByCode["id"] => [
-                                "catname" => $productByCode["CategoryName"],
-                                "compname" => $productByCode["CompanyName"],
-                                "quantity" => $_POST["quantity"],
-                                "pname" => $productByCode["ProductName"],
-                                "price" => $productByCode["ProductPrice"],
-                                "code" => $productByCode["id"],
-                            ],
-                        ];
-                        if (!empty($_SESSION["cart_item"])) {
-                            if (
-                                in_array(
-                                    $productByCode["id"],
-                                    array_keys($_SESSION["cart_item"])
-                                )
-                            ) {
-                                foreach ($_SESSION["cart_item"] as $k => $v) {
-                                    if ($productByCode["id"] == $k) {
 
-                                        if (empty($_SESSION["cart_item"][$k]["quantity"])) {
-                                            $_SESSION["cart_item"][$k]["quantity"] = 0;
-                                        }
-
-                                        $_SESSION["cart_item"][$k]["quantity"] = intval($_POST["quantity"]) + $_SESSION["cart_item"][$k]["quantity"];
-                                    }
-                                }
-                            } else {
-                                $_SESSION["cart_item"] = array_merge(
-                                    $_SESSION["cart_item"],
-                                    $itemArray
-                                );
+                    if (!empty($_SESSION["cart_item"])) {
+                        if (array_key_exists($productByCode["id"], $_SESSION["cart_item"])) {
+                            // If the product is already in the cart, update the quantity only if it's different
+                            if ($_SESSION["cart_item"][$productByCode["id"]]["quantity"] != $_POST["quantity"]) {
+                                $_SESSION["cart_item"][$productByCode["id"]]["quantity"] = $_POST["quantity"];
                             }
                         } else {
-                            $_SESSION["cart_item"] = $itemArray;
+                            // If the product is not in the cart, add it
+                            $_SESSION["cart_item"][$productByCode["id"]] = $itemArray;
                         }
+                    } else {
+                        // If the cart is empty, add the product
+                        $_SESSION["cart_item"][$productByCode["id"]] = $itemArray;
                     }
+                    // Change the URL to remove the product information
+                    echo "<script>window.location.href='http://localhost/dfsms/search-product2.php';</script>";
+                    exit();
                 }
                 break;
 
-            // code for removing product from cart
+                // code for removing product from cart
             case "remove":
                 if (!empty($_SESSION["cart_item"])) {
                     foreach ($_SESSION["cart_item"] as $k => $v) {
-                        if ($_GET["code"] == $k) {
+                    if($_GET["code"] == $k)
                             unset($_SESSION["cart_item"][$k]);
-                        }
-                        if (empty($_SESSION["cart_item"])) {
+                    if(empty($_SESSION["cart_item"]))
                             unset($_SESSION["cart_item"]);
-                        }
                     }
                 }
                 break;
-            // code for if cart is empty
+                // code for if cart is empty
             case "empty":
                 unset($_SESSION["cart_item"]);
                 break;
@@ -142,8 +128,7 @@ if (strlen($_SESSION["aid"] == 0)) {
     }
 
     //Code for Checkout
-    if (isset($_POST["checkout"])) {
-        // Checkout Process
+if(isset($_POST['checkout'])){
         $invoiceno = mt_rand(100000000, 999999999);
         $pid = $_SESSION["productid"];
         $quantity = $_POST["quantity"];
@@ -164,43 +149,62 @@ if (strlen($_SESSION["aid"] == 0)) {
         $_SESSION["invoice"] = $invoiceno;
         echo "<script>window.location.href='invoice2.php'</script>";
     }
+
+    // Check if a product name has been entered for search
+    $pname = '';
+    if (isset($_POST['productname'])) {
+        $pname = mysqli_real_escape_string($con, $_POST['productname']);
+    }
     ?>
 
-<!DOCTYPE html>
-<html lang="en">
-    <body>
-    <!-- HK Wrapper -->
-    <div class="hk-wrapper hk-vertical-nav">
-        <!-- Top Navbar -->
-        <?php include_once('includes/navbar.php');
-        include_once('includes/sidebar2.php');
-        ?>
+    <!DOCTYPE html>
+    <html lang="en">
 
-        <div id="hk_nav_backdrop" class="hk-nav-backdrop"></div>
-        <!-- /Vertical Nav -->
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Search Product</title>
+    <link href="vendors/jquery-toggles/css/toggles.css" rel="stylesheet" type="text/css">
+    <link href="vendors/jquery-toggles/css/themes/toggles-light.css" rel="stylesheet" type="text/css">
+    <link href="dist/css/style.css" rel="stylesheet" type="text/css">
+</head>
 
-        <!-- Main Content -->
-        <div class="hk-pg-wrapper">
-            <!-- Breadcrumb -->
-            <nav class="hk-breadcrumb" aria-label="breadcrumb">
-                <ol class="breadcrumb breadcrumb-light bg-transparent">
-                    <li class="breadcrumb-item"><a href="#">Search</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Product</li>
-                </ol>
-            </nav>
-            <!-- /Breadcrumb -->
+<body>
+    
+    
+	<!-- HK Wrapper -->
+	<div class="hk-wrapper hk-vertical-nav">
 
-            <!-- Container -->
-            <div class="container">
-                <!-- Title -->
-                <div class="hk-pg-header">
-                    <h4 class="hk-pg-title"><span class="pg-title-icon"><span class="feather-icon"><i data-feather="external-link"></i></span></span>Search Product</h4>
-                </div>
-                <!-- /Title -->
+<!-- Top Navbar -->
+<?php include_once('includes/navbar.php');
+include_once('includes/sidebar2.php');
+?>
 
-                <!-- Row -->
-                <div class="row">
-                    <div class="col-xl-12">
+            <div id="hk_nav_backdrop" class="hk-nav-backdrop"></div>
+            <!-- /Vertical Nav -->
+
+            <!-- Main Content -->
+            <div class="hk-pg-wrapper">
+                <!-- Breadcrumb -->
+                <nav class="hk-breadcrumb" aria-label="breadcrumb">
+                    <ol class="breadcrumb breadcrumb-light bg-transparent">
+                        <li class="breadcrumb-item"><a href="#">Search</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Product</li>
+                    </ol>
+                </nav>
+                <!-- /Breadcrumb -->
+
+                <!-- Container -->
+                <div class="container">
+                    <!-- Title -->
+                    <div class="hk-pg-header">
+                        <h4 class="hk-pg-title"><span class="pg-title-icon"><span class="feather-icon"><i data-feather="external-link"></i></span></span>Search Product</h4>
+                    </div>
+                    <!-- /Title -->
+
+                    <!-- Row -->
+                    <div class="row">
+                        <div class="col-xl-12">
                         <section class="hk-sec-wrapper">
                             <div class="row">
                                 <div class="col-sm">
@@ -219,6 +223,7 @@ if (strlen($_SESSION["aid"] == 0)) {
                                 </div>
                             </div>
                         </section>
+                            <!-- Product List Section -->
 
                         <!--code for search result -->
                         <?php if (isset($_POST['search'])) { ?>
@@ -240,8 +245,14 @@ if (strlen($_SESSION["aid"] == 0)) {
                                                 </thead>
                                                 <tbody>
                                                 <?php
-                                                $pname = $_POST['productname'];
-                                                $query = mysqli_query($con, "select * from tblproducts where ProductName like '%$pname%'");
+                                                        // Construct the base query
+                                                        $queryString = "SELECT * FROM tblproducts";
+                                                        // Append the search condition if a product name was searched
+                                                        if (!empty($pname)) {
+                                                            $queryString .= " WHERE ProductName LIKE '%$pname%'";
+                                                        }
+                                                        // Execute the query
+                                                        $query = mysqli_query($con, $queryString);
                                                 $cnt = 1;
                                                 while ($row = mysqli_fetch_array($query)) {
                                                     ?>
@@ -265,7 +276,7 @@ if (strlen($_SESSION["aid"] == 0)) {
                                     </div>
                                 </div>
                             </section>
-                        <?php } ?>
+<?php } ?>                        
 
                         <section class="hk-sec-wrapper">
                             <div class="row">
@@ -432,17 +443,17 @@ if (strlen($_SESSION["aid"] == 0)) {
     </div>
 
 
-    <script src="vendors/jquery/dist/jquery.min.js"></script>
-    <script src="vendors/popper.js/dist/umd/popper.min.js"></script>
-    <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="vendors/jasny-bootstrap/dist/js/jasny-bootstrap.min.js"></script>
-    <script src="dist/js/jquery.slimscroll.js"></script>
-    <script src="dist/js/dropdown-bootstrap-extended.js"></script>
-    <script src="dist/js/feather.min.js"></script>
-    <script src="vendors/jquery-toggles/toggles.min.js"></script>
-    <script src="dist/js/toggle-data.js"></script>
-    <script src="dist/js/init.js"></script>
-    <script src="dist/js/validation-data.js"></script>
+        <script src="vendors/jquery/dist/jquery.min.js"></script>
+        <script src="vendors/popper.js/dist/umd/popper.min.js"></script>
+        <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="vendors/jasny-bootstrap/dist/js/jasny-bootstrap.min.js"></script>
+        <script src="dist/js/jquery.slimscroll.js"></script>
+        <script src="dist/js/dropdown-bootstrap-extended.js"></script>
+        <script src="dist/js/feather.min.js"></script>
+        <script src="vendors/jquery-toggles/toggles.min.js"></script>
+        <script src="dist/js/toggle-data.js"></script>
+        <script src="dist/js/init.js"></script>
+        <script src="dist/js/validation-data.js"></script>
 
     <style type="text/css">
         #btnEmpty {
@@ -464,16 +475,7 @@ if (strlen($_SESSION["aid"] == 0)) {
             color: black;
             text-align: center;
         }
-    </style>
+        </style>
     </body>
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-        <title>Search Product</title>
-        <link href="vendors/jquery-toggles/css/toggles.css" rel="stylesheet" type="text/css">
-        <link href="vendors/jquery-toggles/css/themes/toggles-light.css" rel="stylesheet" type="text/css">
-        <link href="dist/css/style.css" rel="stylesheet" type="text/css">
-    </head>
-
     </html>
 <?php } ?>
