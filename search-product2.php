@@ -1,184 +1,181 @@
 <?php
-session_start();
-//error_reporting(0);
-include "includes/config.php";
-if (strlen($_SESSION["aid"] == 0)) {
-    header("location:logout.php");
-} else {
+    session_start();
+    //error_reporting(0);
+    include "includes/config.php";
+    if (strlen($_SESSION["aid"] == 0)) {
+        header("location:logout.php");
+    } else {
 
-    if (isset($_GET['error']) && $_GET['error'] == 'invalidcoupon') {
-        echo '<script>alert("Invalid coupon code. Please try again.");</script>';
-    }
-
-    // Code for adding and checking Coupon Code Validity
-    if (isset($_POST['couponvalidate'])) {
-        $couponCode = mysqli_real_escape_string($con, $_POST["couponcode"]);
-        $query = "SELECT * FROM tblcoupons WHERE CouponCode = ? AND ValidFrom <= CURDATE() AND ValidTo >= CURDATE()";
-        $stmt = mysqli_prepare($con, $query);
-        mysqli_stmt_bind_param($stmt, "s", $couponCode);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
-
-        if ($row = mysqli_fetch_assoc($result)) {
-            $discountAmount = $row['DiscountAmount'];
-            $discountPercentage = $row['DiscountPercentage'];
-            $discountInfo = "";
-            $discountValue = "";
-
-            $_SESSION['valid_coupon_code'] = $couponCode;
-
-            // Check if discount is in amount or percentage and create a message accordingly
-            if (!is_null($discountAmount) && $discountAmount > 0) {
-                $discountInfo = "Discount Amount: $" . $discountAmount;
-                $discountValue = "-".$discountAmount;
-            } elseif (!is_null($discountPercentage) && $discountPercentage > 0) {
-                $discountInfo = "Discount Percentage: " . $discountPercentage . "%";
-                $discountValue = -$discountPercentage."%";
-            } else {
-                $discountInfo = "No discount available for this coupon.";
-            }
-
-            // Add Coupon In Cart
-            $itemArray = [
-                $row["CouponID"] => [
-                    "catname" => "Coupon",
-                    "compname" => "None",
-                    "quantity" => 0,
-                    "pname" => $couponCode,
-                    "price" => $discountValue,
-                    "code" => "coupon",
-                ],
-            ];
-
-            if (!empty($_SESSION["cart_item"])) {
-                // Remove any existing coupon from the cart
-                foreach ($_SESSION["cart_item"] as $k => $v) {
-                    if ($v["catname"] === "Coupon") {
-                        unset($_SESSION["cart_item"][$k]);
-                    }
-                }
-                // Add the new coupon
-                $_SESSION["cart_item"] = array_merge($_SESSION["cart_item"], $itemArray);
-            } else {
-                $_SESSION["cart_item"] = $itemArray;
-            }
-
-            echo "<script>alert('Coupon code is valid. $discountInfo');</script>";
-        } else {
-            echo "<script>alert('Invalid coupon code. Please enter a different code.');</script>";
+        if (isset($_GET['error']) && $_GET['error'] == 'invalidcoupon') {
+            echo '<script>alert("Invalid coupon code. Please try again.");</script>';
         }
-    }
 
-    //code for Cart
-    if (!empty($_GET["action"])) {
-        switch ($_GET["action"]) {
+        // Code for adding and checking Coupon Code Validity
+        if (isset($_POST['couponvalidate'])) {
+            $couponCode = mysqli_real_escape_string($con, $_POST["couponcode"]);
+            $query = "SELECT * FROM tblcoupons WHERE CouponCode = ? AND ValidFrom <= CURDATE() AND ValidTo >= CURDATE()";
+            $stmt = mysqli_prepare($con, $query);
+            mysqli_stmt_bind_param($stmt, "s", $couponCode);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
 
+            if ($row = mysqli_fetch_assoc($result)) {
+                $discountAmount = $row['DiscountAmount'];
+                $discountPercentage = $row['DiscountPercentage'];
+                $discountInfo = "";
+                $discountValue = "";
+
+                $_SESSION['valid_coupon_code'] = $couponCode;
+
+                // Check if discount is in amount or percentage and create a message accordingly
+                if (!is_null($discountAmount) && $discountAmount > 0) {
+                    $discountInfo = "Discount Amount: $" . $discountAmount;
+                    $discountValue = "-".$discountAmount;
+                } elseif (!is_null($discountPercentage) && $discountPercentage > 0) {
+                    $discountInfo = "Discount Percentage: " . $discountPercentage . "%";
+                    $discountValue = -$discountPercentage."%";
+                } else {
+                    $discountInfo = "No discount available for this coupon.";
+                }
+
+                // Add Coupon In Cart
+                $itemArray = [
+                    $row["CouponID"] => [
+                        "catname" => "Coupon",
+                        "compname" => "None",
+                        "quantity" => 0,
+                        "pname" => $couponCode,
+                        "price" => $discountValue,
+                        "code" => "coupon",
+                    ],
+                ];
+
+                if (!empty($_SESSION["cart_item"])) {
+                    // Remove any existing coupon from the cart
+                    foreach ($_SESSION["cart_item"] as $k => $v) {
+                        if ($v["catname"] === "Coupon") {
+                            unset($_SESSION["cart_item"][$k]);
+                        }
+                    }
+                    // Add the new coupon
+                    $_SESSION["cart_item"] = array_merge($_SESSION["cart_item"], $itemArray);
+                } else {
+                    $_SESSION["cart_item"] = $itemArray;
+                }
+
+                echo "<script>alert('Coupon code is valid. $discountInfo');</script>";
+            } else {
+                echo "<script>alert('Invalid coupon code. Please enter a different code.');</script>";
+            }
+        }
+
+        //code for Cart
+        if (!empty($_GET["action"])) {
+            switch ($_GET["action"]) {
                 //code for adding product in cart
-            case "add":
-                if (!empty($_POST["quantity"])) {
-                    $pid = $_GET["pid"];
-                    $result = mysqli_query($con, "SELECT * FROM tblproducts WHERE id='$pid'");
-                    $productByCode = mysqli_fetch_array($result);
+                case "add":
+                    if (!empty($_POST["quantity"])) {
+                        $pid = $_GET["pid"];
+                        $result = mysqli_query($con, "SELECT * FROM tblproducts WHERE id='$pid'");
+                        $productByCode = mysqli_fetch_array($result);
 
-                    $itemArray = array(
-                        'catname' => $productByCode["CategoryName"],
-                        'compname' => $productByCode["CompanyName"],
-                        'quantity' => $_POST["quantity"],
-                        'pname' => $productByCode["ProductName"],
-                        'price' => $productByCode["ProductPrice"],
-                        'code' => $productByCode["id"]
-                    );
+                        $itemArray = array(
+                            'catname' => $productByCode["CategoryName"],
+                            'compname' => $productByCode["CompanyName"],
+                            'quantity' => $_POST["quantity"],
+                            'pname' => $productByCode["ProductName"],
+                            'price' => $productByCode["ProductPrice"],
+                            'code' => $productByCode["id"]
+                        );
 
-                    if (!empty($_SESSION["cart_item"])) {
-                        if (array_key_exists($productByCode["id"], $_SESSION["cart_item"])) {
-                            // If the product is already in the cart, update the quantity only if it's different
-                            if ($_SESSION["cart_item"][$productByCode["id"]]["quantity"] != $_POST["quantity"]) {
-                                $_SESSION["cart_item"][$productByCode["id"]]["quantity"] = $_POST["quantity"];
+                        if (!empty($_SESSION["cart_item"])) {
+                            if (array_key_exists($productByCode["id"], $_SESSION["cart_item"])) {
+                                // If the product is already in the cart, update the quantity only if it's different
+                                if ($_SESSION["cart_item"][$productByCode["id"]]["quantity"] != $_POST["quantity"]) {
+                                    $_SESSION["cart_item"][$productByCode["id"]]["quantity"] = $_POST["quantity"];
+                                }
+                            } else {
+                                // If the product is not in the cart, add it
+                                $_SESSION["cart_item"][$productByCode["id"]] = $itemArray;
                             }
                         } else {
-                            // If the product is not in the cart, add it
+                            // If the cart is empty, add the product
                             $_SESSION["cart_item"][$productByCode["id"]] = $itemArray;
                         }
-                    } else {
-                        // If the cart is empty, add the product
-                        $_SESSION["cart_item"][$productByCode["id"]] = $itemArray;
+                        // Change the URL to remove the product information
+                        echo "<script>window.location.href='http://localhost/dfsms/search-product2.php';</script>";
+                        exit();
                     }
-                    // Change the URL to remove the product information
-                    echo "<script>window.location.href='http://localhost/dfsms/search-product2.php';</script>";
-                    exit();
-                }
-                break;
+                    break;
 
                 // code for removing product from cart
-            case "remove":
-                if (!empty($_SESSION["cart_item"])) {
-                    foreach ($_SESSION["cart_item"] as $k => $v) {
-                    if($_GET["code"] == $k)
-                            unset($_SESSION["cart_item"][$k]);
-                    if(empty($_SESSION["cart_item"]))
-                            unset($_SESSION["cart_item"]);
+                case "remove":
+                    if (!empty($_SESSION["cart_item"])) {
+                        foreach ($_SESSION["cart_item"] as $k => $v) {
+                        if($_GET["code"] == $k)
+                                unset($_SESSION["cart_item"][$k]);
+                        if(empty($_SESSION["cart_item"]))
+                                unset($_SESSION["cart_item"]);
+                        }
                     }
-                }
-                break;
+                    break;
                 // code for if cart is empty
-            case "empty":
-                unset($_SESSION["cart_item"]);
-                break;
+                case "empty":
+                    unset($_SESSION["cart_item"]);
+                    break;
+            }
         }
-    }
 
-    //Code for Checkout
-if(isset($_POST['checkout'])){
-        $invoiceno = mt_rand(100000000, 999999999);
-        $pid = $_SESSION["productid"];
-        $quantity = $_POST["quantity"];
-        $cname = $_POST["customername"];
-        $cmobileno = $_POST["mobileno"];
-        $pmode = $_POST["paymentmode"];
-        $value = array_combine($pid, $quantity);
-        foreach ($value as $pdid => $qty) {
-            $query = mysqli_query(
-                $con,
-                "insert into tblorders(ProductId,Quantity,InvoiceNumber,CustomerName,CustomerContactNo,PaymentMode,DiscountAmount) values('$pdid','$qty','$invoiceno','$cname','$cmobileno','$pmode','')"
-            );
+        //Code for Checkout
+        if(isset($_POST['checkout'])){
+            $invoiceno = mt_rand(100000000, 999999999);
+            $pid = $_SESSION["productid"];
+            $quantity = $_POST["quantity"];
+            $cname = $_POST["customername"];
+            $cmobileno = $_POST["mobileno"];
+            $pmode = $_POST["paymentmode"];
+            $value = array_combine($pid, $quantity);
+            foreach ($value as $pdid => $qty) {
+                $query = mysqli_query(
+                    $con,
+                    "insert into tblorders(ProductId,Quantity,InvoiceNumber,CustomerName,CustomerContactNo,PaymentMode,DiscountAmount) values('$pdid','$qty','$invoiceno','$cname','$cmobileno','$pmode','')"
+                );
+            }
+            echo '<script>alert("Invoice genrated successfully. Invoice number is "+"' .
+                $invoiceno .
+                '")</script>';
+            unset($_SESSION["cart_item"]);
+            $_SESSION["invoice"] = $invoiceno;
+            echo "<script>window.location.href='invoice2.php'</script>";
         }
-        echo '<script>alert("Invoice genrated successfully. Invoice number is "+"' .
-            $invoiceno .
-            '")</script>';
-        unset($_SESSION["cart_item"]);
-        $_SESSION["invoice"] = $invoiceno;
-        echo "<script>window.location.href='invoice2.php'</script>";
-    }
 
-    // Check if a product name has been entered for search
-    $pname = '';
-    if (isset($_POST['productname'])) {
-        $pname = mysqli_real_escape_string($con, $_POST['productname']);
-    }
+        // Check if a product name has been entered for search
+        $pname = '';
+        if (isset($_POST['productname'])) {
+            $pname = mysqli_real_escape_string($con, $_POST['productname']);
+        }
     ?>
 
     <!DOCTYPE html>
     <html lang="en">
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Search Product</title>
-    <link href="vendors/jquery-toggles/css/toggles.css" rel="stylesheet" type="text/css">
-    <link href="vendors/jquery-toggles/css/themes/toggles-light.css" rel="stylesheet" type="text/css">
-    <link href="dist/css/style.css" rel="stylesheet" type="text/css">
-</head>
+        <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <title>Search Product</title>
+            <link href="vendors/jquery-toggles/css/toggles.css" rel="stylesheet" type="text/css">
+            <link href="vendors/jquery-toggles/css/themes/toggles-light.css" rel="stylesheet" type="text/css">
+            <link href="dist/css/style.css" rel="stylesheet" type="text/css">
+        </head>
 
 <body>
-    
-    
 	<!-- HK Wrapper -->
 	<div class="hk-wrapper hk-vertical-nav">
 
-<!-- Top Navbar -->
-<?php include_once('includes/navbar.php');
-include_once('includes/sidebar2.php');
-?>
+    <!-- Top Navbar -->
+    <?php include_once('includes/navbar.php');
+    include_once('includes/sidebar2.php');
+    ?>
 
             <div id="hk_nav_backdrop" class="hk-nav-backdrop"></div>
             <!-- /Vertical Nav -->
@@ -349,7 +346,7 @@ include_once('includes/sidebar2.php');
                                                                 echo number_format($item_price, 2);
                                                             }
                                                             ?></td>
-                                                        <td><a href="search-product.php?action=remove&code=<?php echo $item["code"]; ?>" class="btnRemoveAction"><img src="dist/img/icon-delete.png" alt="Remove Item" /></a></td>
+                                                        <td><a href="search-product2.php?action=remove&code=<?php echo $item["code"]; ?>" class="btnRemoveAction"><img src="dist/img/icon-delete.png" alt="Remove Item" /></a></td>
                                                     </tr>
                                                     <?php
                                                     $total_quantity += $item["quantity"];
@@ -375,9 +372,6 @@ include_once('includes/sidebar2.php');
                                                     $total_price = $total_price - $discount_value;
                                                 }
                                                 $_SESSION['productid'] = $productid;
-                                                echo '<pre>';
-                                                print_r($productid);
-                                                echo '</pre>';
 
                                                 ?>
                                                 <tr>
