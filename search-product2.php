@@ -79,14 +79,20 @@
                         $result = mysqli_query($con, "SELECT * FROM tblproducts WHERE id='$pid'");
                         $productByCode = mysqli_fetch_array($result);
 
-                        $itemArray = array(
-                            'catname' => $productByCode["CategoryName"],
-                            'compname' => $productByCode["CompanyName"],
-                            'quantity' => $_POST["quantity"],
-                            'pname' => $productByCode["ProductName"],
-                            'price' => $productByCode["ProductPrice"],
-                            'code' => $productByCode["id"]
-                        );
+                        $itemArray = [
+                            $productByCode["id"] => [
+                                'catname' => $productByCode["CategoryName"],
+                                'compname' => $productByCode["CompanyName"],
+                                'quantity' => $_POST["quantity"],
+                                'pname' => $productByCode["ProductName"],
+                                'price' => $productByCode["ProductPrice"],
+                                'code' => strval($productByCode["id"])
+                            ]
+                        ];
+
+                        echo '<pre>';
+                        print_r($itemArray);
+                        echo '</pre>';
 
                         if (!empty($_SESSION["cart_item"])) {
                             if (
@@ -106,13 +112,11 @@
                                     }
                                 }
                             } else {
-                                $_SESSION["cart_item"] = array_merge(
-                                    $_SESSION["cart_item"],
-                                    $itemArray
-                                );
+                                $_SESSION["cart_item"] += $itemArray;
+
                             }
                         } else {
-                            $_SESSION["cart_item"][$productByCode["id"]] = $itemArray;
+                            $_SESSION["cart_item"] = $itemArray;
                         }
                         // Change the URL to remove the product information
                         echo "<script>window.location.href='http://localhost/dfsms/search-product2.php';</script>";
@@ -336,7 +340,14 @@
                                                 </tr>
                                                 <?php
                                                 $productid = array();
+                                                echo '<pre>';
+                                                print_r($_SESSION["cart_item"]);
+                                                echo '</pre>';
                                                 foreach ($_SESSION["cart_item"] as $item) {
+                                                    if (!is_array($item)) {
+                                                        var_dump($item);
+                                                        die("Error: \$item is not an array.");
+                                                    }
                                                     if ($item['code'] === 'Coupon') {
                                                         $item_price = $item["price"];
                                                         array_push($productid, $item['code']);
