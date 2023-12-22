@@ -90,10 +90,6 @@
                             ]
                         ];
 
-                        echo '<pre>';
-                        print_r($itemArray);
-                        echo '</pre>';
-
                         if (!empty($_SESSION["cart_item"])) {
                             if (
                                 in_array(
@@ -340,9 +336,6 @@
                                                 </tr>
                                                 <?php
                                                 $productid = array();
-                                                echo '<pre>';
-                                                print_r($_SESSION["cart_item"]);
-                                                echo '</pre>';
                                                 foreach ($_SESSION["cart_item"] as $item) {
                                                     if (!is_array($item)) {
                                                         var_dump($item);
