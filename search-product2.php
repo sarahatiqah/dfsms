@@ -135,6 +135,19 @@
                 case "empty":
                     unset($_SESSION["cart_item"]);
                     break;
+                    //ISSUE REMOVING COUPON ISSUE
+                case "remove-coupon":
+                    if (!empty($_SESSION["cart_item"])) {
+                        foreach ($_SESSION["cart_item"] as $k => $v) {
+                            if ($v["code"] == "coupon") {
+                                unset($_SESSION["cart_item"][$k]);
+                                break;
+                            }
+                        }
+                    }
+                    echo "<script>alert('Coupon removed successfully');</script>";
+                    echo "<script>window.location.href='search-product2.php';</script>";
+                    break;
             }
         }
 
@@ -345,7 +358,7 @@
                                                         $item_price = $item["price"];
                                                         array_push($productid, $item['code']);
                                                     } else {
-                                                        $item_price = $item["quantity"] * $item["price"];
+                                                        $item_price = (float)$item["quantity"] * (float)$item["price"];
                                                         array_push($productid, $item['code']);
                                                     }
                                                     ?>
