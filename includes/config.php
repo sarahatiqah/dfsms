@@ -32,7 +32,7 @@ try {
     if ($con->connect_error) {
         throw new Exception('Not connected to the database. Error: ' . $con->connect_error);
     } else {
-        echo 'Connected successfully';
+        //echo 'Connected successfully';
     }
 } catch (Exception $e) {
     echo 'An error occurred: ' . $e->getMessage();
