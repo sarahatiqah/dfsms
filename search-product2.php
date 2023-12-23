@@ -40,13 +40,14 @@
 
                 // Add Coupon In Cart
                 $itemArray = [
-                    $row["CouponID"] => [
+                    "coupon" => [
                         "catname" => "Coupon",
                         "compname" => "None",
                         "quantity" => 0,
                         "pname" => $couponCode,
                         "price" => $discountValue,
                         "code" => "coupon",
+//                        "couponID" => $row["CouponID"],
                     ],
                 ];
 
@@ -58,7 +59,7 @@
                         }
                     }
                     // Add the new coupon
-                    $_SESSION["cart_item"] = array_merge($_SESSION["cart_item"], $itemArray);
+                    $_SESSION["cart_item"] = $_SESSION["cart_item"] + $itemArray;
                 } else {
                     $_SESSION["cart_item"] = $itemArray;
                 }
@@ -124,10 +125,12 @@
                 case "remove":
                     if (!empty($_SESSION["cart_item"])) {
                         foreach ($_SESSION["cart_item"] as $k => $v) {
-                        if($_GET["code"] == $k)
+                            if($_GET["code"] == $k) {
                                 unset($_SESSION["cart_item"][$k]);
-                        if(empty($_SESSION["cart_item"]))
+                            }
+                            if(empty($_SESSION["cart_item"])) {
                                 unset($_SESSION["cart_item"]);
+                            }
                         }
                     }
                     break;
@@ -135,18 +138,8 @@
                 case "empty":
                     unset($_SESSION["cart_item"]);
                     break;
-                    //ISSUE REMOVING COUPON ISSUE
                 case "remove-coupon":
-                    if (!empty($_SESSION["cart_item"])) {
-                        foreach ($_SESSION["cart_item"] as $k => $v) {
-                            if ($v["code"] == "coupon") {
-                                unset($_SESSION["cart_item"][$k]);
-                                break;
-                            }
-                        }
-                    }
-                    echo "<script>alert('Coupon removed successfully');</script>";
-                    echo "<script>window.location.href='search-product2.php';</script>";
+                    unset($_SESSION["cart_item"]["coupon"]);
                     break;
             }
         }
@@ -349,6 +342,9 @@
                                                 </tr>
                                                 <?php
                                                 $productid = array();
+                                                echo '<pre>';
+                                                print_r($_SESSION["cart_item"]);
+                                                echo '</pre>';
                                                 foreach ($_SESSION["cart_item"] as $item) {
                                                     if (!is_array($item)) {
                                                         var_dump($item);
@@ -376,7 +372,16 @@
                                                                 echo number_format($item_price, 2);
                                                             }
                                                             ?></td>
-                                                        <td><a href="search-product2.php?action=remove&code=<?php echo $item["code"]; ?>" class="btnRemoveAction"><img src="dist/img/icon-delete.png" alt="Remove Item" /></a></td>
+                                                        <td>
+                                                            <?php
+                                                                if ($item['code'] === 'coupon') {
+                                                                    echo '<a href="search-product2.php?action=remove-coupon" class="btnRemoveAction"><img src="dist/img/icon-delete.png" alt="Remove Coupon" /><a/>';
+                                                                } else {
+                                                                    $linkItemCode = "search-product2.php?action=remove&code=" . $item["code"];
+                                                                    echo '<a href="'. $linkItemCode .'" class="btnRemoveAction"><img src="dist/img/icon-delete.png" alt="Remove Item" /><a/>';
+                                                                }
+                                                            ?>
+                                                        </td>
                                                     </tr>
                                                     <?php
                                                     $total_quantity += $item["quantity"];
