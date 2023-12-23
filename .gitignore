@@ -1,4 +1,4 @@
 # ignore config file
 includes/config.php
-
+.env
 
