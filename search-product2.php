@@ -177,6 +177,7 @@
     <!DOCTYPE html>
     <html lang="en">
 
+
         <head>
             <meta charset="UTF-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -342,9 +343,6 @@
                                                 </tr>
                                                 <?php
                                                 $productid = array();
-                                                echo '<pre>';
-                                                print_r($_SESSION["cart_item"]);
-                                                echo '</pre>';
                                                 foreach ($_SESSION["cart_item"] as $item) {
                                                     if (!is_array($item)) {
                                                         var_dump($item);
