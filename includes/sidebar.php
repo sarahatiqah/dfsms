@@ -47,24 +47,32 @@
 </li>
 </ul>
 </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="javascript:void(0);" data-toggle="collapse" data-target="#product_drp">
+                                <i class="ion ion-ios-list-box"></i>
+                                <span class="nav-link-text">Product</span></a>
+                            <ul id="product_drp" class="nav flex-column collapse collapse-level-1">
+                                <li class="nav-item">
+                                    <ul class="nav flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="add-product.php">Add</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="manage-products.php">Manage</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
 
-<li class="nav-item">
-<a class="nav-link" href="javascript:void(0);" data-toggle="collapse" data-target="#product_drp">
-<i class="ion ion-ios-list-box"></i>
-<span class="nav-link-text">Product</span></a>
-<ul id="product_drp" class="nav flex-column collapse collapse-level-1">
-<li class="nav-item">
-<ul class="nav flex-column">
-<li class="nav-item">
-<a class="nav-link" href="add-product.php">Add</a>
-</li>
-<li class="nav-item">
-<a class="nav-link" href="manage-products.php">Manage</a>
-</li>
-</ul>
-</li>
-</ul>
-</li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="coupon.php">
+                                <i class="ion ion-ios-list-box"></i>
+                                <span class="nav-link-text">Coupons</span>
+                            </a>
+                        </li>
+
+
 
 <li class="nav-item">
 <a class="nav-link" href="search-product.php">

@@ -153,7 +153,8 @@ while($row=mysqli_fetch_array($query))
 </tr>
 
 <?php
-$grandtotal+=$subtotal; 
+$grandtotal =0;
+$grandtotal+=$subtotal;
 $cnt++;
 } ?>
   <tr>
