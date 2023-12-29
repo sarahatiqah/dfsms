@@ -69,7 +69,14 @@ echo "<script>window.location.href='profile.php'</script>";
 
 <!-- Top Navbar -->
 <?php include_once('includes/navbar.php');
-include_once('includes/sidebar.php');
+
+if (strlen($adminid) <= 2) {
+    // Admin
+    include_once('includes/sidebar.php');
+} else {
+    // User
+    include_once('includes/sidebar2.php');
+}
 ?>
        
 
