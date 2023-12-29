@@ -116,6 +116,7 @@ while($row=mysqli_fetch_array($query))
 //Product Details
 $query=mysqli_query($con,"select tblproducts.CategoryName,tblproducts.ProductName,tblproducts.CompanyName,tblproducts.ProductPrice,tblorders.Quantity  from tblorders join tblproducts on tblproducts.id=tblorders.ProductId where tblorders.InvoiceNumber='$inid'");
 $cnt=1;
+$grandtotal=0;
 while($row=mysqli_fetch_array($query))
 {    
 ?>                                                
