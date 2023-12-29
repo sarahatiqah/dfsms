@@ -3,8 +3,8 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 $host = "aws.connect.psdb.cloud";
-$username = "hlvou2sylhvcpj8b8oib";
-$password = "pscale_pw_bNWpPyS1IL2z7rzAsaHNBqM8pcC0PozCsGgUnBsR9jK";
+$username = "6iqhwhy5m6bxp9wkivcz"; //"hlvou2sylhvcpj8b8oib";
+$password = "pscale_pw_Piy5sTanYXFoLYEAm76greWaMGWoowGAOBSDjdSjRVF"; //"pscale_pw_bNWpPyS1IL2z7rzAsaHNBqM8pcC0PozCsGgUnBsR9jK";
 $database = "dfsms";
 // for Windows
 $ssl = __DIR__ . "/cacert.pem";
