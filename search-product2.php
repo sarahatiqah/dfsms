@@ -73,6 +73,12 @@ echo '<script>alert("Invoice genrated successfully. Invoice number is "+"'.$invo
 
 }
 
+// Check if a product name has been entered for search
+$pname = '';
+if (isset($_POST['productname'])) {
+    $pname = mysqli_real_escape_string($con, $_POST['productname']);
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -147,10 +153,10 @@ include_once('includes/sidebar2.php');
 </div>
 </div>
 </section>
-<!--code for search result -->
-<?php if(isset($_POST['search'])){?>
- <section class="hk-sec-wrapper">
+<!-- Product List Section -->
+<section class="hk-sec-wrapper">
      
+                        <div class="table-responsive">
                             <div class="row">
                                 <div class="col-sm">
                                     <div class="table-wrap">
@@ -169,8 +175,14 @@ include_once('includes/sidebar2.php');
                                             </thead>
                                             <tbody>
 <?php
-$pname=$_POST['productname'];
-$query=mysqli_query($con,"select * from tblproducts where ProductName like '%$pname%'");
+// Construct the base query
+$queryString = "SELECT * FROM tblproducts";
+// Append the search condition if a product name was searched
+if (!empty($pname)) {
+    $queryString .= " WHERE ProductName LIKE '%$pname%'";
+}
+// Execute the query
+$query = mysqli_query($con, $queryString);
 $cnt=1;
 while($row=mysqli_fetch_array($query))
 {    
@@ -197,15 +209,15 @@ $cnt++;
                                     </div>
                                 </div>
                             </div>
-</section>
-<?php } ?>                        
+                        </div>
+</section>                       
 
 
 <form class="needs-validation" method="post" novalidate>
 
 <!--- Shopping Cart ---->
 <section class="hk-sec-wrapper">
-     
+                        <div class="table-responsive">
                             <div class="row">
                                 <div class="col-sm">
                                     <div class="table-wrap">
@@ -221,7 +233,7 @@ if(isset($_SESSION["cart_item"])){
   <table id="datable_1" class="table table-hover w-100 display pb-30" border="1">
 <tbody>
 <tr>
-<th >Product Name</th>
+<th>Product Name</th>
 <th>Category</th>
 <th>Company</th>
 <th width="5%">Quantity</th>
@@ -244,7 +256,7 @@ if(isset($_SESSION["cart_item"])){
                 <td><?php echo $item["quantity"]; ?></td>
                 <td><?php echo $item["price"]; ?></td>
                 <td><?php echo number_format($item_price,2); ?></td>
-                <td><a href="search-product.php?action=remove&code=<?php echo $item["code"]; ?>" class="btnRemoveAction"><img src="dist/img/icon-delete.png" alt="Remove Item" /></a></td>
+                <td><a href="search-product2.php?action=remove&code=<?php echo $item["code"]; ?>" class="btnRemoveAction"><img src="dist/img/icon-delete.png" alt="Remove Item" /></a></td>
                 </tr>
                 <?php
                 $total_quantity += $item["quantity"];
@@ -301,14 +313,8 @@ if(isset($_SESSION["cart_item"])){
 }
 ?>
 </div>
+</div>
 </div></div></section>
-
-
-
-    
-
-
-
 
 </div>
 </div>
