@@ -1,3 +1,9 @@
 # ignore config file
 includes/config.php
 .env
+/vendor/vlucas/phpdotenv/
+/vendor/phpoption/phpoption/
+/vendor/symfony/polyfill-ctype/
+/vendor/symfony/polyfill-mbstring/
+/vendor/symfony/polyfill-php80/
+/vendor/graham-campbell/result-type/
