@@ -139,7 +139,7 @@ while($row=mysqli_fetch_array($query))
 //Product Details
 $query=mysqli_query($con,"select tblproducts.CategoryName,tblproducts.ProductName,tblproducts.CompanyName,tblproducts.ProductPrice,tblorders.Quantity  from tblorders join tblproducts on tblproducts.id=tblorders.ProductId where tblorders.InvoiceNumber='$inid'");
 $cnt=1;
-$grandtotal =0;
+$grandtotal=0;
 while($row=mysqli_fetch_array($query))
 {    
 ?>                                                
@@ -150,7 +150,13 @@ while($row=mysqli_fetch_array($query))
 <td><?php echo $row['CompanyName'];?></td>
 <td><?php echo $qty=$row['Quantity'];?></td>
 <td><?php echo $ppu=$row['ProductPrice'];?></td>
-<td><?php echo $subtotal=number_format($ppu*$qty,2);?></td>
+
+<?php 
+    $subtotal = $ppu * $qty;  // Calculate the subtotal (numeric value)
+    $displaysubtotal = number_format($subtotal, 2);  // Format the subtotal for display
+?>
+
+<td><?php echo $displaysubtotal?></td>
 </tr>
 
 <?php
