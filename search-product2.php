@@ -47,7 +47,6 @@ if (strlen($_SESSION['aid']) == 0) {
                     "pname" => $couponCode,
                     "price" => $discountValue,
                     "code" => "coupon",
-//                        "couponID" => $row["CouponID"],
                 ],
             ];
 
@@ -153,10 +152,13 @@ if (strlen($_SESSION['aid']) == 0) {
                     }
                     break;
 
-                // code for if cart is empty
-                case "empty":
-                    unset($_SESSION["cart_item"]);
-                    break;  
+            // code for if cart is empty
+            case "empty":
+                unset($_SESSION["cart_item"]);
+                break;
+            case "remove-coupon":
+                unset($_SESSION["cart_item"]["coupon"]);
+                break;
         }
     }
 

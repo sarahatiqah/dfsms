@@ -156,7 +156,10 @@ if (strlen($_SESSION['aid']) == 0) {
                 // code for if cart is empty
                 case "empty":
                     unset($_SESSION["cart_item"]);
-                    break;  
+                    break;
+            case "remove-coupon":
+                unset($_SESSION["cart_item"]["coupon"]);
+                break;
         }
     }
 
