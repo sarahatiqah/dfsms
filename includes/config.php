@@ -7,9 +7,9 @@ $username = "6iqhwhy5m6bxp9wkivcz"; //"hlvou2sylhvcpj8b8oib";
 $password = "pscale_pw_Piy5sTanYXFoLYEAm76greWaMGWoowGAOBSDjdSjRVF"; //"pscale_pw_bNWpPyS1IL2z7rzAsaHNBqM8pcC0PozCsGgUnBsR9jK";
 $database = "dfsms";
 // for Windows
-$ssl = __DIR__ . "/cacert.pem";
+//$ssl = __DIR__ . "/cacert.pem";
 // for MacOS
-// $ssl = "/etc/ssl/cert.pem";
+$ssl = "/etc/ssl/cert.pem";
 
 $con = mysqli_init();
 mysqli_ssl_set($con, NULL, NULL, $ssl, NULL, NULL);
