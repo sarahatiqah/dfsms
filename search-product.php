@@ -395,6 +395,7 @@ if (strlen($_SESSION['aid']) == 0) {
                                                                 } else {
                                                                     $linkItemCode = "search-product.php?action=remove&code=" . $item["code"];
                                                                     echo '<a href="'. $linkItemCode .'" class="btnRemoveAction"><img src="dist/img/icon-delete.png" alt="Remove Item" /><a/>';
+                                                                    
                                                                 }
                                                             ?>
                                                         </td>
